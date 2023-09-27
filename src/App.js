@@ -19,6 +19,7 @@ function App() {
   let response = [];
   const [data, setData] = useState([]);
   const [dataNext, setDataNext] = useState([]);
+  const [dataWishList, setDataWishList] = useState([]);  
   const fetchInfo = async () => {
 	  response = await fetch(
 		url
@@ -32,7 +33,25 @@ function App() {
 	  url = urlSelected;
     fetchInfo();
   }
+  
 
+  
+  const wishList = (dataObject) => {
+		dataObject['time'] = new Date().getTime();
+		localStorage.setItem(dataObject.name, JSON.stringify(dataObject));	  
+		var arrayCombine = [];
+		var time = [];
+		for (var i = 0; i < localStorage.length; i++){
+			var jsonObject = JSON.parse(localStorage.getItem(localStorage.key(i)));
+			time[jsonObject['time']] = jsonObject['name'];
+		}
+		time.sort();	
+		for (let key of Object.keys(time)){
+			arrayCombine.push(JSON.parse(localStorage.getItem(time[key])));
+		}		
+		setDataWishList(arrayCombine);
+  }
+  
   useEffect(() => {
     fetchInfo();
   }, []);
@@ -66,11 +85,39 @@ function App() {
 				  })}			
 				 {dataObj.created}<br/>
 				 {dataObj.edited}<br/>						 
+				 <input onClick={() => wishList(dataObj)} type="button" name="WishList" value="WishList"/>
 			  </p>
-
 		  );
 		})}
-{dataNext.next != null && <button onClick={() => loadMore(dataNext.next)}>Load More</button>}		
+{dataNext.next != null && <button onClick={() => loadMore(dataNext.next)}>Load More</button>}
+		 <br/>WishList: <br/>
+		{dataWishList.map((dataObj, index) => {
+		  return (
+			  <p>
+				 {dataObj.name}<br/>
+				 {dataObj.rotation_period}<br/>
+				 {dataObj.diameter}<br/>
+				 {dataObj.gravity}<br/>				 
+				 {dataObj.terrain}<br/>				 
+				 {dataObj.surface_water}<br/>				 
+				 {dataObj.population}<br/>
+				 Residence:
+				  {dataObj.residents.map(obj => {
+					return (
+						<h2>link: {obj}</h2>
+					);
+				  })}			
+				 Films:
+				  {dataObj.films.map(obj => {
+					return (
+						<h2>link: {obj}</h2>
+					);
+				  })}			
+				 {dataObj.created}<br/>
+				 {dataObj.edited}<br/>						 
+			  </p>
+		  );
+		})}		
       </center>
     </div>
   );
