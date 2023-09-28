@@ -23,7 +23,13 @@ function App() {
 	const [pagination, setPagination] = useState([]);  
 	
 	const fetchInfo = async () => {
-		response = await fetch(url).then((response) => response.json());
+		response = await fetch(url).then((response) => response.json())
+		.then(response => {
+		  if (!response.ok) {
+			throw new Error('Network error');
+		  }
+		  return response.json();
+		});
 		arrayCombine = data.concat(response.results).unique();	
 		setData(arrayCombine);	  
 		setDataNext(response);
@@ -70,7 +76,7 @@ function App() {
 	const wishList = (dataObject) => {
 		dataObject['time'] = new Date().getTime();
 		localStorage.setItem(dataObject.name, JSON.stringify(dataObject));
-	//	loadWishList(0);	
+		loadWishList(0);	
 	}
 
 	useEffect((number) => {
