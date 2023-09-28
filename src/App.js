@@ -1,6 +1,8 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';  
+import { Pagination } from 'react-bootstrap';  
 
 function App() {
 	let url = "https://swapi.dev/api/planets/";
@@ -23,13 +25,7 @@ function App() {
 	const [pagination, setPagination] = useState([]);  
 	
 	const fetchInfo = async () => {
-		response = await fetch(url).then((response) => response.json())
-		.then(response => {
-			if (!response.ok) {
-				throw new Error('Network Error');
-			}
-			return response.json();
-		});
+		response = await fetch(url).then((response) => response.json());
 		arrayCombine = data.concat(response.results).unique();	
 		setData(arrayCombine);	  
 		setDataNext(response);
@@ -45,7 +41,7 @@ function App() {
 		loadWishList(number);		
 	}
 	
-	const loadWishList = (a) => {
+	const loadWishList = (paging) => {
 		var time = [];
 		for (var i = 0; i < localStorage.length; i++){
 			var jsonObject = JSON.parse(localStorage.getItem(localStorage.key(i)));
@@ -53,10 +49,10 @@ function App() {
 		}
 		time.sort();
 		var c = 0;	
-		var b = a + 2;
+		var b = paging + 2;
 		for (let key of Object.keys(time)){
 			c ++;
-			if(c >= a){
+			if(c >= paging){
 				arrayCombine.push(JSON.parse(localStorage.getItem(time[key])));
 			}
 			if(c > b){
@@ -142,11 +138,17 @@ function App() {
 				  </p>
 			  );
 			})}		
-          {pagination.map((number) => (
-              <a onClick={(e) => {e.preventDefault();paginate(number);}} href="" className="page-link">
-                &nbsp;{number}
-              </a>
-          ))}			
+			<div className='container p-2'>  
+			<Pagination>  			
+			  {pagination.map((number) => (
+				 <Pagination.Item>		  
+				  <a onClick={(e) => {e.preventDefault();paginate(number);}} href="">
+					&nbsp;{number}
+				  </a>
+				</Pagination.Item>  
+			  ))}
+			</Pagination>  						  
+			</div>  			  		  
 		  </center>
 		</div>
 	);
