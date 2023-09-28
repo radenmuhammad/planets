@@ -25,10 +25,10 @@ function App() {
 	const fetchInfo = async () => {
 		response = await fetch(url).then((response) => response.json())
 		.then(response => {
-		  if (!response.ok) {
-			throw new Error('Network error');
-		  }
-		  return response.json();
+			if (!response.ok) {
+				throw new Error('Network Error');
+			}
+			return response.json();
 		});
 		arrayCombine = data.concat(response.results).unique();	
 		setData(arrayCombine);	  
