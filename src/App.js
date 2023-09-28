@@ -27,7 +27,7 @@ function App() {
 		arrayCombine = data.concat(response.results).unique();	
 		setData(arrayCombine);	  
 		setDataNext(response);
-		loadWishList();
+		loadWishList(0);
 	}
 	
 	const loadMore = (urlSelected) => {
@@ -36,24 +36,28 @@ function App() {
 	}
 	
 	const paginate = (number) =>{
-		
+		loadWishList(number);		
 	}
 	
-	const loadWishList = () => {
+	const loadWishList = (a) => {
 		var time = [];
 		for (var i = 0; i < localStorage.length; i++){
 			var jsonObject = JSON.parse(localStorage.getItem(localStorage.key(i)));
 			time[jsonObject['time']] = jsonObject['name'];
 		}
-		time.sort();	
-		var a = 0;
+		time.sort();
+		var c = 0;	
+		var b = a + 2;
 		for (let key of Object.keys(time)){
-			a ++;
-			arrayCombine.push(JSON.parse(localStorage.getItem(time[key])));
-			if( a > 2){
+			c ++;
+			if(c >= a){
+				arrayCombine.push(JSON.parse(localStorage.getItem(time[key])));
+			}
+			if(c > b){
 				break;
 			}
 		}		
+		console.log(arrayCombine);
 		setDataWishList(arrayCombine);
 		const result = [];		
 		for (let i = 1; i <  Math.ceil(localStorage.length/3); i++) {
@@ -66,7 +70,7 @@ function App() {
 	const wishList = (dataObject) => {
 		dataObject['time'] = new Date().getTime();
 		localStorage.setItem(dataObject.name, JSON.stringify(dataObject));
-		loadWishList();	
+	//	loadWishList(0);	
 	}
 
 	useEffect((number) => {
@@ -133,7 +137,7 @@ function App() {
 			  );
 			})}		
           {pagination.map((number) => (
-              <a onClick={() => paginate(number)} href="" className="page-link">
+              <a onClick={(e) => {e.preventDefault();paginate(number);}} href="" className="page-link">
                 &nbsp;{number}
               </a>
           ))}			
